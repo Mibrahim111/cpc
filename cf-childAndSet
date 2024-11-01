@@ -1,0 +1,93 @@
+#include<bits/stdc++.h>
+using namespace std;
+ 
+typedef long long ll;
+typedef unsigned long long ull;
+typedef vector <int> vi;
+typedef vector <ll> vll;
+typedef pair<int, int> ii;
+typedef vector <ii> vii;
+typedef vector <vector<int>> vvi;
+typedef vector <bool> vb;
+ 
+#define  pb  push_back
+#define  mp  make_pair
+#define sz(x) (int)x.size()
+#define lp(i,k,n) for(int i = k; i < n ; i++)
+#define rlp(i,n) for(int i = n-1 ; i>=0 ;i--)
+#define rep(i,x) for(int i = 0; (int)i < sz(x); i++)
+#define clr(v,d) memset(v,d,sizeof(v))
+#define all(x) x.begin() , x.end()
+#define minheap priority_queue<int,vector<int>,greater<int>>
+#define FAST ios_base::sync_with_stdio(0);cin.tie(0);
+constexpr auto pi = 3.14159265358979323846264338327950288419716939937510;
+ 
+long long gcd(long long a, long long b) {
+	return b == 0 ? a : gcd(b, a % b);
+}
+long long lcm(long long a, long long b) {
+	return (a * b / gcd(a, b));
+}
+ 
+constexpr auto N = 540000;
+constexpr auto OO = (ll)0x3f3f3f3f;
+const  double EPS = 1e-8;
+ 
+ll lowBit(ll n)
+{
+    ll ret = -1;
+ 
+    while(n)
+    {
+        if(n%2)
+            return ret+1;
+        ret++;
+        n/=2;
+    }
+    return ret;
+ 
+}
+ 
+int main()
+{
+    FAST
+ 
+    ll n , sum ;
+    vector<ll> ans;
+    cin>>sum>>n;
+ 
+    if(sum == 1)
+    {
+        cout << 1 << '\n' << 1;
+        return 0;
+    }
+ 
+    while(sum && n)
+    {
+ 
+    ll fn =1;
+    while(!(fn & n))
+        fn = fn << 1;
+ 
+        if(fn <= sum)
+           {
+            sum-=pow(2,lowBit(n));
+ 
+            ans.pb(n);
+ 
+           }
+            n--;
+    }
+ 
+    if(sum)
+    {
+        cout << -1 ;
+        return 0;
+    }
+ 
+    cout << ans.size() << '\n';
+    for(auto &i : ans)
+        cout << i << ' ';
+ 
+    return 0;
+}
