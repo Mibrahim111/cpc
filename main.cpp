@@ -1,16 +1,4 @@
-#include <iostream>
-#include <cstring>
-#include <vector>
-#include <algorithm>
-#include <set>
-#include <queue>
-#include <stack>
-#include <map>
-#include <unordered_map>
-#include <unordered_set>
-#include <iomanip>
-#include <cmath>
-
+#include<bits/stdc++.h>
 using namespace std;
 
 typedef long long ll;
@@ -30,6 +18,7 @@ typedef vector <bool> vb;
 #define rep(i,x) for(int i = 0; (int)i < sz(x); i++)
 #define clr(v,d) memset(v,d,sizeof(v))
 #define all(x) x.begin() , x.end()
+#define minheap priority_queue<int,vector<int>,greater<int>>
 #define FAST ios_base::sync_with_stdio(0);cin.tie(0);
 constexpr auto pi = 3.14159265358979323846264338327950288419716939937510;
 
@@ -43,49 +32,62 @@ long long lcm(long long a, long long b) {
 constexpr auto N = 540000;
 constexpr auto OO = (ll)0x3f3f3f3f;
 const  double EPS = 1e-8;
-int dx[4] = { 0, 0, 1, -1 };
-int dy[4] = { 1, -1, 0, 0 };
 
+ll lowBit(ll n)
+{
+    ll ret = -1;
 
-
-int main() {
-	FAST
-
-	ll n , k , ans=0;
-	cin>>n>>k;
-	vector<long long> a(n) , b(n);
-
-	lp(i,0,n)
-	cin>>a[i];
-
-	lp(i,0,n)
-	cin>>b[i];
-
-	ll l = 0 , r = 2000000000;
-
-	while(l<=r)
+    while(n)
     {
-        ll mid = l+(r-l)/2;
-        ll kk = k , i;
-        for(i = 0;i<n;i++)
-        {
-            if(mid*a[i]>b[i])
-                kk-=(mid*a[i]-b[i]);
-             if(kk<0)
-             break;
-        }
-        if(i==n)
-        {
-            l = mid+1;
-            ans = max(mid,ans);
-        } else{
-          r = mid-1;
+        if(n%2)
+            return ret+1;
+        ret++;
+        n/=2;
+    }
+    return ret;
 
-        }
+}
+
+int main()
+{
+    FAST
+
+    ll n , sum ;
+    vector<ll> ans;
+    cin>>sum>>n;
+
+    if(sum == 1)
+    {
+        cout << 1 << '\n' << 1;
+        return 0;
     }
 
-	cout << ans << '\n';
+    while(sum && n)
+    {
 
-//	system("pause");
-	return 0;
+    ll fn =1;
+    while(!(fn & n))
+        fn = fn << 1;
+
+        if(fn <= sum)
+           {
+            sum-=pow(2,lowBit(n));
+
+            ans.pb(n);
+
+           }
+            n--;
+    }
+
+    if(sum)
+    {
+        cout << -1 ;
+        return 0;
+    }
+
+    cout << ans.size() << '\n';
+    for(auto &i : ans)
+        cout << i << ' ';
+
+    return 0;
 }
