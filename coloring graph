@@ -1,0 +1,126 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+typedef long long ll;
+typedef unsigned long long ull;
+typedef vector <int> vi;
+typedef vector <ll> vll;
+typedef pair<int, int> ii;
+typedef vector <ii> vii;
+typedef vector <vector<int>> vvi;
+typedef vector <bool> vb;
+
+#define  pb  push_back
+#define  mp  make_pair
+#define sz(x) (int)x.size()
+#define lp(i,k,n) for(int i = k; i < n ; i++)
+#define rlp(i,n) for(int i = n-1 ; i>=0 ;i--)
+#define rep(i,x) for(int i = 0; (int)i < sz(x); i++)
+#define clr(v,d) memset(v,d,sizeof(v))
+#define all(x) x.begin() , x.end()
+#define minheap priority_queue<int,vector<int>,greater<int>>
+#define FAST ios_base::sync_with_stdio(0);cin.tie(0);
+constexpr auto pi = 3.14159265358979323846264338327950288419716939937510;
+
+long long gcd(long long a, long long b) {
+	return b == 0 ? a : gcd(b, a % b);
+}
+long long lcm(long long a, long long b) {
+	return (a * b / gcd(a, b));
+}
+
+constexpr auto N = 540000;
+constexpr auto OO = (ll)0x3f3f3f3f;
+const  double EPS = 1e-8;
+
+enum Color { white, black };
+
+int n, m;
+vector< vector<int> > adjList;
+
+vector<int> bestBlacks, curBlacks;
+vector<Color> curColor;
+
+
+bool canBeBlack(int node)
+{
+    for(auto nei:adjList[node])
+        if(nei == node || curColor[nei] == black)
+         return 0;
+    return 1;
+}
+
+
+void backtrack(int cur){
+
+   if(n ==cur)
+   {
+       if(bestBlacks.size() < curBlacks.size())
+        bestBlacks = curBlacks;
+
+       return ;
+   }
+   int max_possible = n-cur;
+
+   if(max_possible + curBlacks.size() <= bestBlacks.size())
+    return ;
+
+   if(canBeBlack(cur))
+   {
+       curColor[cur] = black;
+       curBlacks.push_back(cur);
+
+       backtrack(cur+1);
+       curBlacks.pop_back();
+       curColor[cur] = white;
+   }
+
+   backtrack(cur+1);
+
+}
+
+
+
+
+int main() {
+#ifndef ONLINE_JUDGE
+	freopen("test.txt", "rt", stdin);
+#endif
+
+	int cases;
+
+	cin>>cases;
+
+	lp(cc,0,cases)
+	{
+		cin>>n>>m;
+
+		adjList.clear();
+		adjList.resize(n);
+		curBlacks.clear();
+		bestBlacks.clear();
+		curColor = vector<Color>(n, white);
+
+		lp(i,0, m)
+		{
+			int f, t;
+
+			cin>>f>>t;
+			--f, --t;
+
+			adjList[f].push_back(t);
+			adjList[t].push_back(f);
+		}
+		backtrack(0);	// no need to handle disconnected components
+
+		cout<<bestBlacks.size()<<"\n";
+
+		string space = "";
+		for(auto x : bestBlacks)
+			cout<<space<<x+1, space = " ";
+		cout<<"\n";
+	}
+
+	return 0;
+}
+
