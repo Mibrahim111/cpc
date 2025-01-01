@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+class Solution {
+    bool isSubIsland = true;
+
+    bool isValid(const vector<vector<int>> &grid , int x ,int y){
+        return (x >= 0 && x < (int)grid.size() && y >= 0 && y < (int)grid[0].size());
+    }
+
+    int dx[4] = {0,0,-1,1};
+    int dy[4] = {1,-1,0,0};
+
+   void DFS(const vector<vector<int>>&grid1 , vector<vector<int>>&grid2 , int x , int y){
+        if(!isValid(grid2,x,y) || !grid2[x][y])
+            return;
+
+        if(grid1[x][y] == 0 && grid2[x][y] == 1){
+            isSubIsland = false;
+             return;
+        }
+        grid2[x][y] = 0;
+        for(int i = 0 ; i < 4 ; i++){
+            int xc = x + dx[i];
+            int yc = y + dy[i];
+
+                DFS(grid1,grid2,xc,yc);
+        }
+    }
+public:
+    int countSubIslands(vector<vector<int>>& grid1, vector<vector<int>>& grid2) {
+
+          int ans = 0;
+
+          for(int i = 0 ;i < grid2.size() ; i++){
+            for(int j = 0 ; j < grid2[0].size() ; j++){
+                if(grid2[i][j]){
+                        isSubIsland = true;
+                        DFS(grid1,grid2,i,j);
+                        if(isSubIsland)
+                            ans++;
+              }
+            }
+          }
+        return ans;
+    }
+};
+
