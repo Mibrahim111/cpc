@@ -1,0 +1,43 @@
+#include<vector>
+#include <queue>
+using std::vector;
+using std::queue;
+using std::pair;
+
+
+class Solution {
+
+    bool isGoal(const int& goal, int x, queue<int>& q, vector<bool>& vis) {
+        if (x == goal)
+            return true;
+        if (x >= 0 && x <= 1000 && !vis[x])
+            q.push(x), vis[x] = 1;
+
+        return false;
+    }
+
+public:
+    int minimumOperations(vector<int>& nums, int start, int goal) {
+
+        queue<int>q;
+        vector<bool> vis(1001,0);
+        q.push(start);
+        vis[start] = 1;
+
+        for (int level = 0, sz = 1; !q.empty(); level++, sz = (int)q.size()) {
+            while (sz--) {
+                int current = q.front();
+                q.pop();
+
+                for(int i = 0 ; i<nums.size(); i++)
+                {
+                    if (this->isGoal(goal, current - nums[i], q, vis) || this->isGoal(goal, current ^ nums[i], q, vis) ||
+                        this->isGoal(goal, current + nums[i], q, vis))
+                        return level + 1;
+                }
+               
+            }
+        }
+        return -1;
+    }
+};
