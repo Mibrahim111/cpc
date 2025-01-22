@@ -1,0 +1,124 @@
+#include <vector>
+#include <queue>
+#include <string>
+#include <unordered_set>
+#include <cassert>
+#include <iostream>
+
+using std::vector;
+using std::queue;
+using std::string;
+using std::unordered_set;
+
+class Solution {
+    string change_string(string& str, short operation, size_t idx) {
+        string ret = str;
+            char c = ret[idx];
+        if(operation == 0) //minus
+        {
+            if (c == '0')
+                c = '9';
+            else
+            c -= 1;
+        }
+        else //plus
+        {
+            if (c == '9')
+                c = '0';
+            else
+                c += 1;
+        }
+        ret[idx] = c;
+        return ret;
+    }
+
+    bool process(queue<string>& q, const unordered_set<string>& deadends, unordered_set<string>& vis, string & str , const string & goal) {
+
+        if (deadends.count(str))
+                return 0;
+       
+
+        if (str == goal)
+            return 1;
+
+        if(!vis.count(str))
+        {
+            q.push(str);
+            vis.insert(str);
+        }
+        return 0;
+    }
+
+    int BFS(const string& target, string& start , const unordered_set<string>& deadends)
+    {
+        unordered_set<string> vis;
+        queue<string> q;
+        q.push(start);
+        vis.insert(start);
+
+        for (int level = 0, sz = 1; !q.empty(); level++, sz = (int)q.size()) {
+            while (sz--) {
+                string cur = q.front();       q.pop();
+
+                for (int i = 0; i < (int)cur.size(); i++) {
+                    string next = change_string(cur, 1, i), 
+                           previous = change_string(cur, 0, i);
+
+                    if (!vis.count(next))
+                        if (process(q, deadends, vis, next, target))
+                            return level + 1;
+
+                    if(!vis.count(previous))
+                        if(process(q, deadends, vis, previous, target))
+                            return level + 1;
+                }
+
+            }
+        }
+        return -1;
+
+    }
+
+public:
+    int openLock(vector<string>& deadends, string target) {
+        string start = "0000";
+        unordered_set<string> ds(deadends.begin(),deadends.end());
+        if(ds.count(start))
+            return -1;
+
+        if (target == start)
+            return 0;
+        
+
+        return BFS(target,start, ds);
+
+    }
+};
+
+
+void testOpenLock() {
+    Solution sol;
+
+    vector<string> deadends1 = { "0201", "0101", "0102", "1212", "2002" };
+    string target1 = "0202";
+    assert(sol.openLock(deadends1, target1) == 6);
+
+    vector<string> deadends2 = { "8888" };
+    string target2 = "0009";
+    assert(sol.openLock(deadends2, target2) == 1);
+
+    vector<string> deadends3 = { "8887", "8889", "8878", "8898", "8788", "8988", "7888", "9888" };
+    string target3 = "8888";
+    assert(sol.openLock(deadends3, target3) == -1);
+
+    vector<string> deadends4 = { "0000" };
+    string target4 = "8888";
+    assert(sol.openLock(deadends4, target4) == -1);
+
+  
+    vector<string> deadends5 = { "0201", "0101", "0102", "1212", "2002" };
+    string target5 = "0000";
+    assert(sol.openLock(deadends5, target5) == 0);
+
+    std::cout << "All test cases passed!" << std::endl;
+}
